@@ -1,0 +1,11 @@
+# 忽略依赖包（体积巨大，不能上传）
+node_modules/
+backend/node_modules/
+
+# 忽略 Azure 本地模拟器的临时数据（这是垃圾文件，不能上传）
+__azurite*
+*.json.lck
+
+# 忽略本地配置文件
+local.settings.json
+.vscode/

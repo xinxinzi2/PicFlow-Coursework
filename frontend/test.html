@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>PicFlow 上传测试</h2>
+    <input type="file" id="fileInput">
+    <button onclick="uploadFile()">点击上传</button>
+    
+    <p id="status"></p>
+    <div id="result"></div>
+
+    <script>
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const status = document.getElementById('status');
+            const resultDiv = document.getElementById('result');
+
+            if (!fileInput.files[0]) {
+                alert("请先选一张图！");
+                return;
+            }
+
+            status.innerText = "正在上传...";
+            resultDiv.innerHTML = "";
+
+            // 准备数据
+            const formData = new FormData();
+            formData.append('image', fileInput.files[0]);
+
+            try {
+                // 发送请求给后端
+                const response = await fetch('http://localhost:7071/api/uploadImage', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    status.innerText = "上传成功！✅";
+                    // 显示上传后的图片
+                    resultDiv.innerHTML = `
+                        <p>文件链接: <a href="${data.url}" target="_blank">${data.url}</a></p>
+                        <img src="${data.url}" style="max-width: 300px;">
+                    `;
+                } else {
+                    status.innerText = "上传失败 ❌: " + (data.body || "未知错误");
+                }
+            } catch (error) {
+                console.error(error);
+                status.innerText = "请求出错 ❌ (请检查后端是否启动): " + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
